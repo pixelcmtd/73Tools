@@ -5,10 +5,10 @@ namespace _73LogToXml
 {
     class Line
     {
-        public DateTime time { get; private set; }
-        public string[] tokens { get; private set; }
-        public string caller { get; private set; }
-        public string name { get; private set; }
+        public DateTime time;
+        public string[] tokens;
+        public string caller;
+        public string name;
 
         public Line(string line)
         {
