@@ -1,0 +1,14 @@
+D:\workspace_VS\73LogToXml\73LogToXml\bin\x64\Release\73LogToXml.exe.config
+D:\workspace_VS\73LogToXml\73LogToXml\bin\x64\Release\73LogToXml.exe
+D:\workspace_VS\73LogToXml\73LogToXml\bin\x64\Release\73LogToXml.pdb
+D:\workspace_VS\73LogToXml\73LogToXml\obj\x64\Release\73LogToXml.csprojResolveAssemblyReference.cache
+D:\workspace_VS\73LogToXml\73LogToXml\obj\x64\Release\73LogToXml.csproj.CoreCompileInputs.cache
+D:\workspace_VS\73LogToXml\73LogToXml\obj\x64\Release\73LogToXml.exe
+D:\workspace_VS\73LogToXml\73LogToXml\obj\x64\Release\73LogToXml.pdb
+D:\workspace_VS\73Tools\73LogToXml\bin\x64\Release\73LogToXml.exe.config
+D:\workspace_VS\73Tools\73LogToXml\bin\x64\Release\73LogToXml.exe
+D:\workspace_VS\73Tools\73LogToXml\bin\x64\Release\73LogToXml.pdb
+D:\workspace_VS\73Tools\73LogToXml\obj\x64\Release\73LogToXml.csprojAssemblyReference.cache
+D:\workspace_VS\73Tools\73LogToXml\obj\x64\Release\73LogToXml.csproj.CoreCompileInputs.cache
+D:\workspace_VS\73Tools\73LogToXml\obj\x64\Release\73LogToXml.exe
+D:\workspace_VS\73Tools\73LogToXml\obj\x64\Release\73LogToXml.pdb

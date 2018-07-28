@@ -1,0 +1,7 @@
+D:\workspace_VS\73Tools\73XmlToNames\bin\x64\Release\73XmlToNames.exe.config
+D:\workspace_VS\73Tools\73XmlToNames\bin\x64\Release\73XmlToNames.exe
+D:\workspace_VS\73Tools\73XmlToNames\bin\x64\Release\73XmlToNames.pdb
+D:\workspace_VS\73Tools\73XmlToNames\obj\x64\Release\73XmlToNames.csprojAssemblyReference.cache
+D:\workspace_VS\73Tools\73XmlToNames\obj\x64\Release\73XmlToNames.csproj.CoreCompileInputs.cache
+D:\workspace_VS\73Tools\73XmlToNames\obj\x64\Release\73XmlToNames.exe
+D:\workspace_VS\73Tools\73XmlToNames\obj\x64\Release\73XmlToNames.pdb
