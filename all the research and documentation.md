@@ -9,8 +9,7 @@ Every line of log is one event in the following format:
 `$"{dd}.{mm}.{yyyy}	{hh}:{mm}:{ss}	{action} in {caller}	tokens"`  
 (yes, these are actual tabulators)
 
-# Tha actions
-Known action names(they will be documented later):  
+# Tha known action names(they will be documented later)  
 StartProgram  
 OnReceive  
 NachrichtBehandeln  
@@ -38,7 +37,7 @@ The 73XML-Format is a notation of 73-logs which is designed to be both valid XML
 Encoding a single line in C# looks like this:  
 `$"<sad><line name=\"{name}\" caller=\"{caller}\" tokens=\"{tokens}\" /></sad>"`
 
-#Tha 73DB-Format
+# Tha 73DB-Format
 The 73DataBase-Format is a Deflate wrapper around a line object.  
 The sequentially saved line objects look like this:
 ```cpp
