@@ -38,7 +38,7 @@ Encoding a single line in C# looks like this:
 `$"<sad><line name=\"{name}\" caller=\"{caller}\" tokens=\"{tokens}\" /></sad>"`
 
 # Tha 73DB-Format
-The 73DataBase-Format is a Deflate wrapper around a line object.  
+The 73DataBase-Format is a Deflate wrapper around line objects.  
 The sequentially saved line objects look like this:
 ```cpp
 #include <stdint.h>
