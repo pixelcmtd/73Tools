@@ -1,12 +1,12 @@
 # Tha log naming
 The raw logs are always about 1 MiB big.  
 Their names are always in the following format:  
-$"SADLog bis {mm}-{dd}-{yyyy} {hh}-{mm}-{ss}.txt",  
+`$"SADLog bis {mm}-{dd}-{yyyy} {hh}-{mm}-{ss}.txt"`,  
 except the newest one, which is not finished and called "SADLog.txt".  
 
 # Tha line syntax
 Every line of log is one event in the following format:  
-$"{dd}.{mm}.{yyyy}	{hh}:{mm}:{ss}	{action} in {caller}	tokens"  
+`$"{dd}.{mm}.{yyyy}	{hh}:{mm}:{ss}	{action} in {caller}	tokens"`  
 (yes, these are actual tabulators)
 
 # Tha actions
@@ -36,9 +36,11 @@ GetClientIPAddress
 # Tha 73XML-Format
 The 73XML-Format is a notation of 73-logs which is designed to be both valid XML and human readable.  
 Encoding a single line in C# looks like this:  
-    $"<sad><line name=\"{name}\" caller=\"{caller}\" tokens=\"{tokens}\" /></sad>"
+`$"<sad><line name=\"{name}\" caller=\"{caller}\" tokens=\"{tokens}\" /></sad>"`
 
-The 73DB-Format:
+#Tha 73DB-Format
+The 73DataBase-Format is a Deflate wrapper around a line object.  
+The sequentially saved line objects look like this:
 ```cpp
 #include <stdint.h>
 #include <string>
@@ -54,4 +56,4 @@ struct line
 	string tokens;
 }
 ```
-73DB: Deflate{line}
+The line objects are all just appended and compressed with Deflate.
