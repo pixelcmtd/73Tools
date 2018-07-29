@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using lib73;
+using System.Collections.Generic;
 using System.Text;
 using static System.Console;
 using static System.IO.File;
@@ -9,7 +10,7 @@ namespace _73LogToXml
     {
         static void Main(string[] args)
         {
-            Write("Xml file: ");
+            Write("XML file: ");
             string xml = ReadLine();
 
             List<Line> allLines = new List<Line>();
@@ -27,7 +28,7 @@ namespace _73LogToXml
 
             StringBuilder sb = new StringBuilder("<sad>");
             foreach (Line l in lines)
-                sb.Append("\n    "+l.ToString());
+                sb.Append("\n    "+l.to_xml());
             sb.Append("\n</sad>");
 
             WriteAllText(xml, sb.ToString());

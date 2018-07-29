@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using static System.IO.File;
 using static System.Console;
 using System.Text;
+using lib73;
 
 namespace _73XmlTimeSort
 {
@@ -14,12 +14,7 @@ namespace _73XmlTimeSort
             Write("Output file: ");
             string output_file = ReadLine();
 
-            List<Line> lines = new List<Line>();
-            XmlReader xml = XmlReader.Create(args[0]);
-
-            while (xml.Read())
-                if (xml.Name == "line")
-                    lines.Add(new Line(xml.GetAttribute("name"), xml.GetAttribute("caller"), xml.GetAttribute("tokens"), xml.GetAttribute("time")));
+            Line[] lines = Line.from_xml(args[0]);
 
             lines = s(lines);
 
@@ -31,24 +26,22 @@ namespace _73XmlTimeSort
             WriteAllText(output_file, sb.ToString());
         }
 
-        static List<Line> s(List<Line> u)
+        static Line[] s(Line[] u)
         {
-            if (u.Count < 2)
+            if (u.Length < 2)
                 return u;
 
             List<Line> l = new List<Line>();
             List<Line> r = new List<Line>();
-            int m = u.Count / 2;
+            int m = u.Length / 2;
 
             for (int i = 0; i < m; i++)
                 l.Add(u[i]);
 
-            for (int i = m; i < u.Count; i++)
+            for (int i = m; i < u.Length; i++)
                 r.Add(u[i]);
 
-            l = s(l);
-            r = s(r);
-            return s(l, r);
+            return s(s(l.ToArray()).ToList(), s(r.ToArray()).ToList()).ToArray();
         }
 
         static List<Line> s(List<Line> l, List<Line> r)
