@@ -1,0 +1,7 @@
+D:\workspace_VS\73Tools\73LogToDb\bin\x64\Release\73LogToDb.exe.config
+D:\workspace_VS\73Tools\73LogToDb\bin\x64\Release\73LogToDb.exe
+D:\workspace_VS\73Tools\73LogToDb\bin\x64\Release\73LogToDb.pdb
+D:\workspace_VS\73Tools\73LogToDb\obj\x64\Release\73LogToDb.csprojAssemblyReference.cache
+D:\workspace_VS\73Tools\73LogToDb\obj\x64\Release\73LogToDb.csproj.CoreCompileInputs.cache
+D:\workspace_VS\73Tools\73LogToDb\obj\x64\Release\73LogToDb.exe
+D:\workspace_VS\73Tools\73LogToDb\obj\x64\Release\73LogToDb.pdb

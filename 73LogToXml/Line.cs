@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 
 namespace _73LogToXml
 {
@@ -10,22 +9,22 @@ namespace _73LogToXml
         public string caller;
         public string name;
 
-        public Line(string line)
+        public Line(string l)
         {
-            time = parse_time(line);
-            string[] s = line.Substring(20).Split(' ', '	');
+            time = parse_time(l);
+            string[] s = l.Substring(20).Split(' ', '	');
             name = s[0];
             caller = s[2];
             tokens = new string[s.Length - 3];
-            Array.Copy(s, 3, tokens, 0, s.Length - 3);
+            Array.Copy(s, 3, tokens, 0, tokens.Length);
         }
 
         string combine_tokens()
         {
-            StringBuilder sb = new StringBuilder(tokens[0]);
+            string s = tokens[0];
             for (int i = 1; i < tokens.Length; i++)
-                sb.Append(" " + tokens[i]);
-            return sb.ToString();
+                s += " " + tokens[i];
+            return s;
         }
 
         public override string ToString() => $"<line name=\"{xml_esc(name)}\" caller=\"{xml_esc(caller)}\" tokens=\"{xml_esc(combine_tokens())}\" time=\"{time.ToBinary()}\" />";

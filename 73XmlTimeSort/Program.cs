@@ -18,20 +18,20 @@ namespace _73XmlTimeSort
             XmlReader xml = XmlReader.Create(args[0]);
 
             while (xml.Read())
-                if (xml.NodeType == XmlNodeType.Element && xml.Name == "line")
+                if (xml.Name == "line")
                     lines.Add(new Line(xml.GetAttribute("name"), xml.GetAttribute("caller"), xml.GetAttribute("tokens"), xml.GetAttribute("time")));
 
-            lines = ms(lines);
+            lines = s(lines);
 
             StringBuilder sb = new StringBuilder("<sad>");
             foreach (Line l in lines)
-                sb.Append("\r\n    " + l.ToString());
-            sb.Append("\r\n</sad>");
+                sb.Append("\n    " + l.ToString());
+            sb.Append("\n</sad>");
 
             WriteAllText(output_file, sb.ToString());
         }
 
-        static List<Line> ms(List<Line> u)
+        static List<Line> s(List<Line> u)
         {
             if (u.Count < 2)
                 return u;
@@ -46,12 +46,12 @@ namespace _73XmlTimeSort
             for (int i = m; i < u.Count; i++)
                 r.Add(u[i]);
 
-            l = ms(l);
-            r = ms(r);
-            return ms(l, r);
+            l = s(l);
+            r = s(r);
+            return s(l, r);
         }
 
-        static List<Line> ms(List<Line> l, List<Line> r)
+        static List<Line> s(List<Line> l, List<Line> r)
         {
             List<Line> res = new List<Line>();
 

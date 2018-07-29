@@ -2,10 +2,10 @@
 {
     class Line
     {
-        public long time { get; private set; }
-        public string tokens { get; private set; }
-        public string caller { get; private set; }
-        public string name { get; private set; }
+        public long time;
+        public string tokens;
+        public string caller;
+        public string name;
 
         public Line(string name, string caller, string tokens, string time)
         {

@@ -14,7 +14,7 @@ namespace _73XmlToNames
             XmlReader xml = XmlReader.Create(args[0]);
             List<string> names = new List<string>();
             while (xml.Read())
-                if (xml.NodeType == XmlNodeType.Element && xml.Name == "line" && !names.Contains(xml.GetAttribute("name")))
+                if (xml.Name == "line" && !names.Contains(xml.GetAttribute("name")))
                     names.Add(xml.GetAttribute("name"));
             File.WriteAllLines(name_file, names);
         }
