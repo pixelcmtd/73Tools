@@ -32,3 +32,16 @@ GetClientIPAddress
 
 The 73XML-Format:
 $"<sad><line name=\"{name}\" caller=\"{caller}\" tokens=\"{tokens}\" /></sad>"
+
+The 73DB-Format:
+struct line
+{
+	uint8_t name_length;
+	utf8_string name;
+	uint8_t caller_length;
+	utf8_string caller;
+	int64_t timestamp;
+	uint16_t token_length;
+	utf8_string tokens;
+}
+73DB: Deflate{line}
