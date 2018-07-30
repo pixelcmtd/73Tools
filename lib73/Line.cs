@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System.Xml;
 
@@ -69,6 +70,17 @@ namespace lib73
             return b.ToArray();
         }
 
+        public static byte[] enc_and_comp(IEnumerable<Line> lines)
+        {
+            List<byte> bytes = new List<byte>();
+            foreach (Line l in lines)
+                bytes.AddRange(l.enc());
+            MemoryStream ms = new MemoryStream();
+            DeflateStream ds = new DeflateStream(ms, CompressionLevel.Optimal, true);
+            ds.Write(bytes.ToArray(), 0, bytes.Count);
+            //TODO: READ MS
+        }
+
         public static Line dec(byte[] enc)
         {
             Stream s = new MemoryStream(enc, false);
@@ -87,6 +99,14 @@ namespace lib73
             s.Read(buffer, 0, buffer.Length);
             string tokens = Encoding.UTF8.GetString(buffer);
             return new Line(time, tokens, caller, name);
+        }
+
+        public static Line[] decomp_and_dec(byte[] bytes)
+        {
+            DeflateStream ds = new DeflateStream(new MemoryStream(bytes, false), CompressionMode.Decompress);
+            MemoryStream ms = new MemoryStream();
+            ds.CopyTo(ms);
+            //TODO: FIND A WAY TO GET THE LENGTH OF A LINE BLOCK
         }
 
         public string to_xml()
