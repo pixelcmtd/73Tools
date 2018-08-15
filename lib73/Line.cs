@@ -7,13 +7,32 @@ using System.Xml;
 
 namespace lib73
 {
+	/// <summary>
+    /// Represents a line in the log of Schuladmin.
+    /// </summary>
     public class Line
     {
+		/// <summary>
+        /// The timestamp of the line.
+        /// </summary>
         public DateTime time;
+        /// <summary>
+        /// The tokens that are given after the caller and name.
+        /// </summary>
         public string[] tokens;
+        /// <summary>
+        /// The caller that did cause this event.
+        /// </summary>
         public string caller;
+        /// <summary>
+        /// The name of the event.
+        /// </summary>
         public string name;
 
+        /// <summary>
+		/// Parses a line of Schuladmin log into a new <see cref="Line"/> object.
+        /// </summary>
+        /// <param name="l">The Schuladmin line</param>
         public Line(string l)
         {
             time = new DateTime(int.Parse(l.Substring(6, 4)), int.Parse(l.Substring(3, 2)), int.Parse(l.Substring(0, 2)), int.Parse(l.Substring(11, 2)), int.Parse(l.Substring(14, 2)), int.Parse(l.Substring(17, 2)));
@@ -48,6 +67,10 @@ namespace lib73
             this.name = name;
         }
 
+        /// <summary>
+        /// Combines the tokens to a ' '-separated string.
+        /// </summary>
+        /// <returns>The combined tokens.</returns>
         string combine_tokens()
         {
             string s = tokens[0];
@@ -76,7 +99,12 @@ namespace lib73
             return b.ToArray();
         }
 
-        public static byte[] enc_and_comp(IEnumerable<Line> lines)
+        /// <summary>
+        /// Encodes the lines to a 73DB.
+        /// </summary>
+        /// <returns>The encoded 73db.</returns>
+        /// <param name="lines">The lines.</param>
+        public static byte[] enc_73db(IEnumerable<Line> lines)
         {
             List<byte> bytes = new List<byte>();
             foreach (Line l in lines)
@@ -115,7 +143,7 @@ namespace lib73
             return new Line(time, tokens, caller, name);
         }
 
-        public static Line[] decomp_and_dec(byte[] bytes)
+        public static Line[] dec_73db(byte[] bytes)
         {
             DeflateStream ds = new DeflateStream(new MemoryStream(bytes, false), CompressionMode.Decompress);
             MemoryStream ms = new MemoryStream();
@@ -140,9 +168,14 @@ namespace lib73
 
         public static Line from_xml(XmlReader xml)
         {
-            return new Line(xml_reverse_esc(xml.GetAttribute("time")), xml_reverse_esc(xml.GetAttribute("tokens")), xml_reverse_esc(xml.GetAttribute("caller")), xml_reverse_esc(xml.GetAttribute("name")));
+            return new Line(xml.GetAttribute("time"), xml_reverse_esc(xml.GetAttribute("tokens")), xml_reverse_esc(xml.GetAttribute("caller")), xml_reverse_esc(xml.GetAttribute("name")));
         }
 
+        /// <summary>
+        /// Parses a 73XML to a line array.
+        /// </summary>
+        /// <returns>The parsed lines.</returns>
+        /// <param name="file">The file of the 73XML.</param>
         public static Line[] from_xml(string file)
         {
             List<Line> lines = new List<Line>();
@@ -156,12 +189,17 @@ namespace lib73
 
         static string xml_reverse_esc(string s)
         {
-            return s.Replace("[SOH]", "").Replace("[STX]", "").Replace("[ETX]", "");
+            return s.Replace("[SOH]", "\u0001").Replace("[STX]", "\u0002").Replace("[ETX]", "\u0003");
         }
 
+        /// <summary>
+        /// Escapes a few chars for XML.
+        /// </summary>
+        /// <returns>The escaped string.</returns>
+        /// <param name="s">The raw string.</param>
         static string xml_esc(string s)
         {
-            return s.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("'", "&apos;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("", "[SOH]").Replace("", "[STX]").Replace("", "[ETX]");
+            return s.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("'", "&apos;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\u0001", "[SOH]").Replace("\u0002", "[STX]").Replace("\u0003", "[ETX]");
         }
     }
 }
