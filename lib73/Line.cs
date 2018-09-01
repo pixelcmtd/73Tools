@@ -16,14 +16,17 @@ namespace lib73
         /// The timestamp of the line.
         /// </summary>
         public DateTime time;
+
         /// <summary>
         /// The tokens that are given after the caller and name.
         /// </summary>
         public string[] tokens;
+
         /// <summary>
         /// The caller that did cause this event.
         /// </summary>
         public string caller;
+
         /// <summary>
         /// The name of the event.
         /// </summary>
@@ -43,6 +46,9 @@ namespace lib73
             Array.Copy(s, 3, tokens, 0, tokens.Length);
         }
 
+        /// <summary>
+        /// Constructs a new <see cref="Line"/> object from the given variables and splits the tokens.
+        /// </summary>
         public Line(DateTime time, string tokens, string caller, string name)
         {
             this.time = time;

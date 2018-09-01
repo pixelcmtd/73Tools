@@ -2,6 +2,7 @@
 using System.Xml;
 using static System.Console;
 using static System.IO.File;
+using lib73;
 
 namespace _73XmlToNames
 {
@@ -9,13 +10,14 @@ namespace _73XmlToNames
     {
         static void Main(string[] args)
         {
+            Write("Input file: ");
+            string in_file = ReadLine();
             Write("Output file: ");
             string name_file = ReadLine();
-            XmlReader xml = XmlReader.Create(args[0]);
             List<string> names = new List<string>();
-            while (xml.Read())
-                if (xml.Name == "line" && !names.Contains(xml.GetAttribute("name")))
-                    names.Add(xml.GetAttribute("name"));
+            foreach (Line l in Line.from_xml(in_file))
+                if (!names.Contains(l.name))
+                    names.Add(l.name);
             WriteAllLines(name_file, names);
         }
     }
