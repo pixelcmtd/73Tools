@@ -49,8 +49,9 @@ namespace lib73
             time = DateTime.Parse($"{s[0]} {s[1]}");
             string[] s2 = s[2].Split(' ');
             name = s2[0];
-            caller = s2[1];
-            for (int i = 2; i < s2.Length; i++)
+            if (s2[1] != "in") throw new Exception("s2[1] should be in, but it is " + s2[1]);
+            caller = s2[2];
+            for (int i = 3; i < s2.Length; i++)
                 caller += " " + s2[i];
             tokens = s[3];
             error = int.Parse(s[4]);

@@ -8,7 +8,9 @@ except the newest one, which is not finished and called "SADLog.txt".
 
 # Tha line syntax
 Every line of log is one event in the following format:  
-`$"{dd}.{mm}.{yyyy}	{hh}:{mm}:{ss}	{action} in {caller}	tokens"`  
+```cs
+$"{dd}.{mm}.{yyyy}	{hh}:{mm}:{ss}	{action} in {caller}	{tokens}	{error}"
+```
 (yes, these are actual tabulators)
 
 # Tha known action names(they will be documented later)  
