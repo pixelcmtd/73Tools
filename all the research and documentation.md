@@ -7,7 +7,7 @@ $"SADLog bis {mm}-{dd}-{yyyy} {hh}-{mm}-{ss}.txt"
 except the newest one, which is not finished and called "SADLog.txt".  
 
 # Tha line syntax
-Every line of log is one event in the following format:  
+Almost every line of log is one event in the following format:  
 ```cs
 $"{dd}.{mm}.{yyyy}	{hh}:{mm}:{ss}	{action} in {caller}	{tokens}	{error}"
 ```
@@ -25,7 +25,7 @@ RemoveSession
 MainSAD  
 CheckBasisserver  
 ConnectDB  
-IsPC  
+IsPC (exception to the normal line syntax)  
 GetMandant  
 GetServerName  
 LesePfade  
