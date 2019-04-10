@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Xml;
+using static lib73.clib;
 
 namespace lib73
 {
@@ -20,7 +21,7 @@ namespace lib73
         /// <summary>
         /// The tokens that are given after the caller and name.
         /// </summary>
-        public string[] tokens;
+        public string tokens;
 
         /// <summary>
         /// The caller that did cause this event.
@@ -33,75 +34,67 @@ namespace lib73
         public string name;
 
         /// <summary>
+        /// The return value of the call.
+        /// </summary>
+        public int error;
+
+        /// <summary>
 		/// Parses a line of Schuladmin log into a new <see cref="Line"/> object.
         /// </summary>
         /// <param name="l">The Schuladmin line</param>
         public Line(string l)
         {
-            time = new DateTime(int.Parse(l.Substring(6, 4)), int.Parse(l.Substring(3, 2)), int.Parse(l.Substring(0, 2)), int.Parse(l.Substring(11, 2)), int.Parse(l.Substring(14, 2)), int.Parse(l.Substring(17, 2)));
-            string[] s = l.Substring(20).Split(' ', '	');
-            name = s[0];
-            caller = s[2];
-            tokens = new string[s.Length - 3];
-            Array.Copy(s, 3, tokens, 0, tokens.Length);
+            string[] s = l.Split('	');
+            if (s.Length != 5) throw new Exception("Invalid 73LogLine: " + l);
+            time = DateTime.Parse($"{s[0]} {s[1]}");
+            string[] s2 = s[2].Split(' ');
+            name = s2[0];
+            caller = s2[1];
+            for (int i = 2; i < s2.Length; i++)
+                caller += " " + s2[i];
+            tokens = s[3];
+            error = int.Parse(s[4]);
         }
 
         /// <summary>
-        /// Constructs a new <see cref="Line"/> object from the given variables and splits the tokens.
+        /// Constructs a new <see cref="Line"/> object from the given variables.
         /// </summary>
-        public Line(DateTime time, string tokens, string caller, string name)
-        {
-            this.time = time;
-            this.tokens = tokens.Split(' ');
-            this.caller = caller;
-            this.name = name;
-        }
-
-        public Line(DateTime time, string[] tokens, string caller, string name)
+        public Line(DateTime time, string tokens, string caller, string name, int error)
         {
             this.time = time;
             this.tokens = tokens;
             this.caller = caller;
             this.name = name;
+            this.error = error;
         }
 
-        public Line(string time, string tokens, string caller, string name)
-        {
-            this.time = DateTime.FromBinary(long.Parse(time));
-            this.tokens = tokens.Split(' ');
-            this.caller = caller;
-            this.name = name;
-        }
-
-        /// <summary>
-        /// Combines the tokens to a ' '-separated string.
-        /// </summary>
-        /// <returns>The combined tokens.</returns>
-        string combine_tokens()
-        {
-            string s = tokens[0];
-            for (int i = 1; i < tokens.Length; i++)
-                s += " " + tokens[i];
-            return s;
-        }
+        public Line(string time, string tokens, string caller, string name, int error)
+        : this(DateTime.Parse(time), tokens, caller, name, error) { }
 
         public byte[] enc()
         {
             List<byte> b = new List<byte>();
-            b.Add((byte)name.Length);
-            b.AddRange(Encoding.UTF8.GetBytes(name));
-            b.Add((byte)caller.Length);
-            b.AddRange(Encoding.UTF8.GetBytes(caller));
-            byte[] c = BitConverter.GetBytes(time.ToBinary());
-            if (!BitConverter.IsLittleEndian)
-                Array.Reverse(c);
-            b.AddRange(c);
-            string t = combine_tokens();
-            c = BitConverter.GetBytes((ushort)t.Length);
-            if (!BitConverter.IsLittleEndian)
-                Array.Reverse(c);
-            b.AddRange(c);
-            b.AddRange(Encoding.UTF8.GetBytes(t));
+            b.Add((byte)utf8c(name));
+            b.AddRange(utf8(name));
+            b.Add((byte)utf8c(caller));
+            b.AddRange(utf8(caller));
+            long l = time.ToBinary();
+            b.Add((byte)(l >> 56));
+            b.Add((byte)(l >> 48));
+            b.Add((byte)(l >> 40));
+            b.Add((byte)(l >> 32));
+            b.Add((byte)(l >> 24));
+            b.Add((byte)(l >> 16));
+            b.Add((byte)(l >> 8));
+            b.Add((byte)l);
+            int i = utf8c(tokens);
+            b.Add((byte)(i >> 8));
+            b.Add((byte)i);
+            b.AddRange(utf8(tokens));
+            b.Add((byte)(error >> 24));
+            b.Add((byte)(error >> 16));
+            b.Add((byte)(error >> 8));
+            b.Add((byte)error);
             return b.ToArray();
         }
 
@@ -112,12 +105,14 @@ namespace lib73
         /// <param name="lines">The lines.</param>
         public static byte[] enc_73db(IEnumerable<Line> lines)
         {
-            List<byte> bytes = new List<byte>();
-            foreach (Line l in lines)
-                bytes.AddRange(l.enc());
             MemoryStream ms = new MemoryStream();
             DeflateStream ds = new DeflateStream(ms, CompressionLevel.Optimal, true);
-            ds.Write(bytes.ToArray(), 0, bytes.Count);
+            foreach (Line l in lines)
+			{
+				byte[] b = l.enc();
+				ds.Write(b, 0, b.Length);
+			}
+            ds.Close();
             return ms.ToArray();
         }
 
@@ -130,23 +125,20 @@ namespace lib73
         {
             byte[] buffer = new byte[s.ReadByte()];
             s.Read(buffer, 0, buffer.Length);
-            string name = Encoding.UTF8.GetString(buffer);
+            string name = utf8(buffer);
             buffer = new byte[s.ReadByte()];
             s.Read(buffer, 0, buffer.Length);
-            string caller = Encoding.UTF8.GetString(buffer);
-            buffer = new byte[8];
-            s.Read(buffer, 0, 8);
-            if (!BitConverter.IsLittleEndian)
-                Array.Reverse(buffer);
-            DateTime time = DateTime.FromBinary(BitConverter.ToInt64(buffer, 0));
-            buffer = new byte[2];
-            s.Read(buffer, 0, 2);
-            if (!BitConverter.IsLittleEndian)
-                Array.Reverse(buffer);
-            buffer = new byte[BitConverter.ToUInt16(buffer, 0)];
+            string caller = utf8(buffer);
+            DateTime time = DateTime.FromBinary((s.ReadByte() << 56) |
+                (s.ReadByte() << 48) | (s.ReadByte() << 40) |
+                (s.ReadByte() << 32) | (s.ReadByte() << 24) |
+                (s.ReadByte() << 16) | (s.ReadByte() << 8)  | s.ReadByte());
+            buffer = new byte[(s.ReadByte() << 8) | s.ReadByte()];
             s.Read(buffer, 0, buffer.Length);
-            string tokens = Encoding.UTF8.GetString(buffer);
-            return new Line(time, tokens, caller, name);
+            string tokens = utf8(buffer);
+            int error = (s.ReadByte() << 24) | (s.ReadByte() << 16) |
+                        (s.ReadByte() << 8)  |  s.ReadByte();
+            return new Line(time, tokens, caller, name, error);
         }
 
         public static Line[] dec_73db(byte[] bytes)
@@ -156,25 +148,37 @@ namespace lib73
             ds.CopyTo(ms);
             List<Line> l = new List<Line>();
             while(true)
-                try
-                {
-                    l.Add(dec(ms));
-                }
-                catch
-                {
-                    break;
-                }
+                try { l.Add(dec(ms)); }
+                catch { break; }
             return l.ToArray();
         }
 
         public string to_xml()
         {
-            return $"<line name=\"{xml_esc(name)}\" caller=\"{xml_esc(caller)}\" tokens=\"{xml_esc(combine_tokens())}\" time=\"{time.ToBinary()}\" />";
+            return $"<line name=\"{xml_esc(name)}\" caller=\"{xml_esc(caller)}\" " +
+                   $"tokens=\"{xml_esc(tokens)}\" time=\"{time.ToBinary()}\" " +
+                   $"error=\"{error}\" />";
+        }
+
+        public static string to_xml(IEnumerable<Line> lines)
+        {
+            StringBuilder sb = new StringBuilder("<sad>");
+            foreach (Line l in lines)
+            {
+                sb.Append("\n    ");
+                sb.Append(l.to_xml());
+            }
+            sb.Append("\n</sad>\n");
+            return sb.ToString();
         }
 
         public static Line from_xml(XmlReader xml)
         {
-            return new Line(xml.GetAttribute("time"), xml_reverse_esc(xml.GetAttribute("tokens")), xml_reverse_esc(xml.GetAttribute("caller")), xml_reverse_esc(xml.GetAttribute("name")));
+            return new Line(xml.GetAttribute("time"),
+                xml_reverse_esc(xml.GetAttribute("tokens")),
+                xml_reverse_esc(xml.GetAttribute("caller")),
+                xml_reverse_esc(xml.GetAttribute("name")),
+                int.Parse(xml.GetAttribute("error")));
         }
 
         /// <summary>
@@ -195,7 +199,10 @@ namespace lib73
 
         static string xml_reverse_esc(string s)
         {
-            return s.Replace("[SOH]", "\u0001").Replace("[STX]", "\u0002").Replace("[ETX]", "\u0003");
+            return s
+                .Replace("[SOH]", "\u0001")
+                .Replace("[STX]", "\u0002")
+                .Replace("[ETX]", "\u0003");
         }
 
         /// <summary>
@@ -205,7 +212,15 @@ namespace lib73
         /// <param name="s">The raw string.</param>
         static string xml_esc(string s)
         {
-            return s.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("'", "&apos;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\u0001", "[SOH]").Replace("\u0002", "[STX]").Replace("\u0003", "[ETX]");
+            return s
+                .Replace("&", "&amp;")
+                .Replace("\"", "&quot;")
+                .Replace("'", "&apos;")
+                .Replace("<", "&lt;")
+                .Replace(">", "&gt;")
+                .Replace("\u0001", "[SOH]")
+                .Replace("\u0002", "[STX]")
+                .Replace("\u0003", "[ETX]");
         }
     }
 }

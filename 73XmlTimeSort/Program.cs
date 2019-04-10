@@ -13,35 +13,20 @@ namespace _73XmlTimeSort
         {
             Write("Output file: ");
             string output_file = ReadLine();
-
-            Line[] lines = Line.from_xml(args[0]);
-
-            lines = s(lines);
-
-            StringBuilder sb = new StringBuilder("<sad>");
-            foreach (Line l in lines)
-                sb.Append("\n    " + l.ToString());
-            sb.Append("\n</sad>");
-
-            WriteAllText(output_file, sb.ToString());
+            WriteAllText(output_file, Line.to_xml(
+                                          s(new List<Line>(
+                                              Line.from_xml(args[0])))));
         }
 
-        static Line[] s(Line[] u)
+        static List<Line> s(List<Line> u)
         {
-            if (u.Length < 2)
-                return u;
-
+            if (u.Count < 2) return u;
             List<Line> l = new List<Line>();
             List<Line> r = new List<Line>();
-            int m = u.Length / 2;
-
-            for (int i = 0; i < m; i++)
-                l.Add(u[i]);
-
-            for (int i = m; i < u.Length; i++)
-                r.Add(u[i]);
-
-            return s(s(l.ToArray()).ToList(), s(r.ToArray()).ToList()).ToArray();
+            int m = u.Count / 2;
+            for (int i = 0; i < m; i++) l.Add(u[i]);
+            for (int i = m; i < u.Count; i++) r.Add(u[i]);
+            return s(s(l), s(r));
         }
 
         static List<Line> s(List<Line> l, List<Line> r)
@@ -49,7 +34,6 @@ namespace _73XmlTimeSort
             List<Line> res = new List<Line>();
 
             while (l.Count > 0 || r.Count > 0)
-            {
                 if (l.Count > 0 && r.Count > 0)
                     if (l.First().time <= r.First().time)
                     {
@@ -71,7 +55,6 @@ namespace _73XmlTimeSort
                     res.Add(r.First());
                     r.Remove(r.First());
                 }
-            }
             return res;
         }
     }

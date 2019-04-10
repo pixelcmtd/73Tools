@@ -12,26 +12,15 @@ namespace _73LogToXml
         {
             Write("XML file: ");
             string xml = ReadLine();
-
-            List<Line> allLines = new List<Line>();
+            List<Line> lines = new List<Line>();
             foreach(string file in args)
             {
                 string[] rawInput = ReadAllLines(file);
-                Line[] lns = new Line[rawInput.Length - 1];
-                for (int i = 0; i < rawInput.Length - 1; i++)
-                    lns[i] = new Line(rawInput[i]);
-                allLines.AddRange(lns);
+                for (int i = 0; i < rawInput.Length; i++)
+                    if (rawInput[i] != "") lines.Add(new Line(rawInput[i]));
                 WriteLine("Added " + file);
             }
-
-            Line[] lines = allLines.ToArray();
-
-            StringBuilder sb = new StringBuilder("<sad>");
-            foreach (Line l in lines)
-                sb.Append("\n    "+l.to_xml());
-            sb.Append("\n</sad>");
-
-            WriteAllText(xml, sb.ToString());
+            WriteAllText(xml, Line.to_xml(lines));
         }
     }
 }

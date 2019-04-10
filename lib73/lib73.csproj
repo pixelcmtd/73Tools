@@ -37,10 +37,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CheckBasisserver.cs" />
-    <Compile Include="ConnectDB.cs" />
+    <Compile Include="clib.cs" />
     <Compile Include="Line.cs" />
-    <Compile Include="MainSAD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
